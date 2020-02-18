@@ -14,7 +14,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
-
+import org.openqa.selenium.WebDriver;
 
 import qa.base.TestBase;
 
@@ -24,6 +24,7 @@ public class TestUtil extends TestBase{
 	static FileInputStream fileinput;
 	static Workbook book1;
 	static Sheet sheet2;
+	public static String timestamp;
 	
 	
 	
@@ -48,14 +49,20 @@ public class TestUtil extends TestBase{
 		return data;
 	}
 	
-	public static void takeScreenshot() throws IOException {
+	public static String getTimestamp() {
+		 timestamp = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss").format(new Date());
+		return timestamp;
+		
+	}
+	public static String takeScreenshot() throws IOException {
 		File srcFile = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 		String path = System.getProperty("user.dir");
+		String screenshotpath = path+"\\screenshots\\"+getTimestamp()+".png";
 		System.out.println(path);
-		String timestamp = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss").format(new Date());
-		File destFile = new File(path+"\\screenshots\\"+timestamp+".png");
-		FileUtils.copyFile(srcFile, destFile);
 		
+		File destFile = new File(screenshotpath);
+		FileUtils.copyFile(srcFile, destFile);
+		return screenshotpath;
 	}
 	
 	

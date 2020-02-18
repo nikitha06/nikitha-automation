@@ -40,14 +40,13 @@ public class LoginPage extends TestBase{
 	public String validateTitle() {
 		String title = driver.getTitle();
 		System.out.println("Title of the page is "+title);
-		logger1.pass("Title success");
+		
 		return title;
 		
 	}
 	
 	public void validateLoginPage(String uname, String pwd) throws IOException {
-		logger1 = report.createTest("Testing login page");
-		logger1.info("Opened the app");
+		
 		System.out.println(uname);
 		System.out.println(pwd);
 		username.sendKeys(uname);
@@ -57,11 +56,11 @@ public class LoginPage extends TestBase{
 		wait.until(ExpectedConditions.visibilityOfElementLocated(By.name("password")));
 		password.sendKeys(pwd);
 		nextbutton.click();
-		logger1.pass("Logged in");		
+
 		account.click();
 		TestUtil.takeScreenshot();
 		signout.click();
-		logger1.pass("Logged out");
+		
 	}
 
 }

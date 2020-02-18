@@ -8,13 +8,19 @@ import org.apache.poi.EncryptedDocumentException;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.ITestResult;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterSuite;
+import org.testng.annotations.BeforeSuite;
+import org.testng.annotations.BeforeTest;
 
 import com.aventstack.extentreports.ExtentReports;
 import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.MediaEntityBuilder;
+import com.aventstack.extentreports.Status;
 import com.aventstack.extentreports.reporter.ExtentHtmlReporter;
 
 import qa.util.TestUtil;
@@ -27,9 +33,42 @@ public class TestBase {
 	public static Sheet sheet1;
 	public static String url;
 	public static String browser;
+	public static ExtentHtmlReporter reporter;
+	public static ExtentReports extentreport;
+	public static ExtentTest extenttest;
 	public static String excelpath = "C:\\Users\\NIKITHA\\eclipse-workspace\\LearnSelenium\\src\\main\\java\\qa\\testdata\\GmailTestData.xlsx";
-	public static ExtentReports report;
-	public static ExtentTest logger1;
+	
+	
+	@BeforeTest
+	public void beforeTest() {
+		
+		reporter = new ExtentHtmlReporter(System.getProperty("user.dir")+"\\reports\\"+"extentreport.html");
+		extentreport = new ExtentReports();
+		extentreport.attachReporter(reporter);
+		System.out.println("before test parent");
+	}
+	
+	@AfterMethod
+	public void afterMethod(ITestResult result) throws IOException {
+		if(result.getStatus()==ITestResult.FAILURE) {
+			extenttest.log(Status.FAIL, "Testcase failed is "+result.getName()); //to add name in extent report
+			extenttest.log(Status.FAIL, "Test case failed is "+result.getThrowable().getMessage()); //to add error and exception in extent report
+			extenttest.fail("Test case failed", MediaEntityBuilder.createScreenCaptureFromPath(TestUtil.takeScreenshot()).build());
+		}
+		
+		else if(result.getStatus()==ITestResult.SUCCESS) {
+			extenttest.log(Status.PASS, "Testcase passed is "+result.getName());
+			extenttest.pass("Test case failed", MediaEntityBuilder.createScreenCaptureFromPath(TestUtil.takeScreenshot()).build());
+		}
+		
+		else if (result.getStatus()==ITestResult.SKIP) {
+			extenttest.log(Status.SKIP, "Test case skipped is "+result.getName());
+		}
+		extentreport.flush();
+		System.out.println("after method parent");
+		driver.quit();
+	}
+	
 	
 
 	public void initialisation() throws EncryptedDocumentException, IOException {
@@ -46,11 +85,6 @@ public class TestBase {
 			System.out.println("url= "+url);
 			System.out.println("browser= "+browser);
 			
-			
-			ExtentHtmlReporter extent = new ExtentHtmlReporter(System.getProperty("user.dir")+"\\Reports\\"+"extentreport.html");
-			report = new ExtentReports();
-			report.attachReporter(extent);
-			extent.flush();
 			
 		}
 		

@@ -25,6 +25,7 @@ public class LoginPageTest extends TestBase{
 	@BeforeMethod
 	public void setUp() throws EncryptedDocumentException, IOException {
 		initialisation();
+		System.out.println("before method child");
 		loginpage = new LoginPage();
 		
 	}
@@ -32,8 +33,11 @@ public class LoginPageTest extends TestBase{
 	@Test(priority=1)
 	
 	public void titleTest() throws IOException {
+		extenttest = extentreport.createTest("titleTestValidation");
 		String title = loginpage.validateTitle();
 		Assert.assertEquals(title, "Sign in – Google accounts");
+		//extenttest.info("Started application");
+		System.out.println("titleTest child");
 		TestUtil.takeScreenshot();
 		
 	}
@@ -47,14 +51,16 @@ public class LoginPageTest extends TestBase{
 	
 	@Test(priority=2,dataProvider="GmailTestData")
 	public void loginTest(String Username, String Password) throws IOException{
-		
+		extenttest = extentreport.createTest("loginTestValidation");
 		loginpage.validateLoginPage(Username, Password);
-		
+		//extenttest.info("Login success");
+		System.out.println("logintest child");
 	}
 	
 	@AfterMethod
 	public void tearDown() {
-		driver.quit();
+		System.out.println("after method child");
+		
 	}
 
 }
